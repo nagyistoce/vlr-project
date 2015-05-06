@@ -1,0 +1,11 @@
+*TODO*
+
+1. Find out about the usage limitations on Clarifai
+2. Parse Clarifai response
+3. Find out way to display Clarifai and Twitter tags along with the image
+	Idea: 3 columns- 
+		left: human 
+		right: deep learning 
+		middle: image
+
+4. Call this mNEIL + Hashtags
