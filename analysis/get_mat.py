@@ -1,12 +1,13 @@
 import numpy as np
 import plotly.plotly as py
 from plotly.graph_objs import *
+from random import shuffle
 
 from matplotlib import pyplot
 from matplotlib import cm
 
-f1 = open('tft.txt','r')
-f2 = open('tfht.txt','r')
+f1 = open('t_trun2.txt','r')
+f2 = open('ht_trun2.txt','r')
 
 hts_labels = []
 ts_labels = []
@@ -20,27 +21,47 @@ f2.close()
 
 
 s = (len(ts_labels),len(hts_labels))
-mat = np.zeros(s,dtype=int)
+mat = np.zeros(s,dtype=float)
 fi = open('clean_final_data.txt','r')
 for line in fi:
 	datum = line.split('\t')
 	hts = datum[0].split(',')
 	ht_is = []
 	for ht in hts:
-		ht_is.append(hts_labels.index(ht.lower()))	
-	# print(ht_is)
+		try:
+			ht_is.append(hts_labels.index(ht.lower()))	
+		except ValueError:
+			pass
 	ts = datum[-2].split(',')
 	t_is = []
 	for t in ts:
-		t_is.append(ts_labels.index(t.lower()))
-	# print(t_is)
-	# input('e')
+		try:
+			t_is.append(ts_labels.index(t.lower()))
+		except ValueError:
+			pass
 	for ti in t_is:
 		for hti in ht_is:
 			mat[ti,hti]+=1
 
+for i in range(0,(mat.shape)[0]):
+	s = 0
+	for j in range(0,mat.shape[1]):
+		s += mat[i,j]
+	for j in range(0,mat.shape[1]):
+		mat[i,j] /= s 
+
 fi.close
-# np.savetxt('test.txt',mat,fmt="%d")
+np.savetxt('mat.txt',mat,fmt="%f")
 # pyplot.imshow(mat[1:20,1:20], cmap=pyplot.cm.hot)    
 # pyplot.colorbar()    
 # pyplot.show()
+
+
+data = Data([
+    Heatmap(
+        z=mat,
+        x=hts_labels,
+        y=ts_labels
+    )
+])
+plot_url = py.plot(data, filename='labelled-heatmap')
